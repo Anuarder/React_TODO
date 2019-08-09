@@ -23,16 +23,6 @@ a {
 body {
     overflow-x: hidden; 
     background-color: #fff;
-    &::-webkit-scrollbar{
-        width: 2px;
-    }
-    &::-webkit-scrollbar-thumb{
-        background-color: black;
-        width: 2px;
-    }
-    &::-webkit-scrollbar-track{
-        background-color: #6e6e6e;
-    }
 }
 
 .modal-open{
