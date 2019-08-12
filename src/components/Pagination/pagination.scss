@@ -1,0 +1,16 @@
+@import "../../styles/variables.scss";
+
+.pagination{
+    @include flex_center();
+    margin-top: .5rem;
+
+    &__item{
+        cursor: pointer;
+        @include flex_center();
+        border: 1px solid black;
+        width: 30px; 
+        height: 30px;
+        padding: .5rem;
+        margin-right: .5rem;
+    }
+}

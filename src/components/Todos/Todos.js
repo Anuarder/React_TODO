@@ -2,27 +2,27 @@ import "./todos.scss"
 import React, { Component } from 'react'
 import TodoItem from "../TodoItem/TodoItem"
 import FilterTodo from "../FilterTodo/FilterTodo"
+import Pagination from "../Pagination/Pagination"
 
 class Todos extends Component{
     // data
     state = {
         new_todo: "",
-        id_count: 0,
-        todos: [],
+        id_count: 1,
+        todos: [
+            {
+                id: 0,
+                title: "Example todo",
+                isCompleted: false,
+                isEdit: false
+            }
+        ],
         filter: "uncompleted",
-        filterTodo: []
+        filterTodo: [],
+        todosPerPage: 7,
+        currentPage: 1
     }
 
-    //computed
-    filterTodos = () => {
-        return this.state.todos.filter(el => {
-            if(this.state.filter === "completed"){
-                return el.isCompleted === true
-            }else {
-                return el.isCompleted === false
-            }
-        })
-    }
 
     //methods
     handleTodoComplete = (id) => {
@@ -95,6 +95,7 @@ class Todos extends Component{
             })
         });
     }
+    
     handleEndEdit = (id, e) => {
         if(e.key === "Enter"){
             this.handleEditTodo(id);
@@ -104,9 +105,22 @@ class Todos extends Component{
     handleFilterChange = (value) => {
         this.setState({filter: value});
     }
-
+    handlePaginate = (value) => {
+        this.setState({currentPage: value})
+    }
     //template
     render(){
+        const { todos, currentPage, todosPerPage, filter } = this.state;
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirsTodo = indexOfLastTodo  - todosPerPage;
+        const filterTodo = todos.filter(el => {
+                if(filter === "completed"){
+                    return el.isCompleted === true
+                }else {
+                    return el.isCompleted === false
+                }
+            });
+            const currentTodos = filterTodo.slice(indexOfFirsTodo, indexOfLastTodo);
         return(
             <div className="todos-component">
                 <div className="todos">
@@ -125,11 +139,11 @@ class Todos extends Component{
                         </div>
                     </div>
                     <FilterTodo 
-                        filter={this.state.filter}
+                        filter={filter}
                         onChange={this.handleFilterChange}/>
                     <div className="todos__list">
                         {
-                            this.filterTodos().map((todo, i) => (
+                            currentTodos.map((todo, i) => (
                                 <TodoItem 
                                     todo={todo} 
                                     key={todo.id} 
@@ -141,6 +155,11 @@ class Todos extends Component{
                             ))
                         }
                     </div>
+                    <Pagination 
+                        totalData = {todos.length}
+                        dataPerPage={todosPerPage}
+                        paginate={this.handlePaginate}
+                        currentPage={currentPage}/>
                 </div> 
             </div>
         )
