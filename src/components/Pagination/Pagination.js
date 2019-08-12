@@ -20,8 +20,8 @@ const Pagination = ({dataPerPage, totalData, currentPage, paginate, }) => {
                     <div 
                         className="pagination__item"
                         style={currentPageStyle(number)}
-                        key={number} 
-                        onClick={paginate.bind(this, number)}>
+                        key={number}
+                        onClick={() => paginate(number)}>
                         {number}
                     </div>
                 ))
