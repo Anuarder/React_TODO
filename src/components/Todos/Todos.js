@@ -3,12 +3,14 @@ import React, { Component } from 'react'
 import TodoItem from "../TodoItem/TodoItem"
 
 class Todos extends Component{
+    // data
     state = {
         new_todo: "",
         id_count: 0,
         todos: []
     }
 
+    //methods
     handleTodoComplete = (id) => {
         this.setState({ 
             todos: this.state.todos.map(todo => {
@@ -19,6 +21,7 @@ class Todos extends Component{
             })
         });
     }
+    
     handleTodoDelete = (id) => {
         this.setState(state => {
             const todos = state.todos.filter(el => el.id !== id);
@@ -47,7 +50,7 @@ class Todos extends Component{
     }
 
     handleEditTodo = (id) => {
-        this.setState({ 
+        this.setState({
             todos: this.state.todos.map(todo => {
                 if(todo.id === id){
                     todo.isEdit = !todo.isEdit;
@@ -55,18 +58,31 @@ class Todos extends Component{
                 return todo;
             })
         });
-        console.log(id)
     }
 
     handleNewTodoChange = (e) => {
-        this.setState({ new_todo: e.target.value.toUpperCase() });
+        this.setState({ new_todo: e.target.value });
     }
     
-    handleEditTitle = (e) => {
-        // Todo: редактирование
-        console.log(e);
+    handleEditTitle = (id, e) => {
+        this.setState({
+            todos: this.state.todos.map(todo => {
+                // Передаваемое значение идет первым, e последним
+                // Реакт обновляет значение input
+                if(todo.id === id){
+                    todo.title = e.target.value;
+                }
+                return todo;
+            })
+        });
+    }
+    handleEndEdit = (id, e) => {
+        if(e.key === "Enter"){
+            this.handleEditTodo(id);
+        }
     }
 
+    //template
     render(){
         return(
             <div className="todos-component">
@@ -94,7 +110,8 @@ class Todos extends Component{
                                     todoComplete={this.handleTodoComplete}
                                     deleteTodo={this.handleTodoDelete}
                                     editTodo={this.handleEditTodo}
-                                    editTitle={this.handleEditTitle}/>
+                                    editTitle={this.handleEditTitle}
+                                    endEdit={this.handleEndEdit}/>
                             ))
                         }
                     </div>

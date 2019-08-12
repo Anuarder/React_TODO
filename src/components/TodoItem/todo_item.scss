@@ -13,8 +13,12 @@
         @include input_reset();
         font-size: 1rem;
     }
-    input{
+    input[type="checkbox"]{
         margin-right: .5rem;
+    }
+    input[type="text"]{
+        @include input_reset();
+        width: 100%;
     }
 }
 
