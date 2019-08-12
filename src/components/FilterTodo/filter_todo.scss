@@ -1,0 +1,21 @@
+@import "../../styles/variables.scss";
+
+.todos__filter{
+    @include flex_center();
+    button{
+        @include input_reset();
+        cursor: pointer;
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        color: black;
+    }
+    &-button__green{
+        background-color: #0dd661b2 !important;
+        color: #fff !important;
+    }
+    &-button__red{
+        background-color: #e92b2b !important;
+        color: #fff !important;
+    }
+}

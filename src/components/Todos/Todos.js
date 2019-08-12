@@ -1,13 +1,27 @@
 import "./todos.scss"
 import React, { Component } from 'react'
 import TodoItem from "../TodoItem/TodoItem"
+import FilterTodo from "../FilterTodo/FilterTodo"
 
 class Todos extends Component{
     // data
     state = {
         new_todo: "",
         id_count: 0,
-        todos: []
+        todos: [],
+        filter: "uncompleted",
+        filterTodo: []
+    }
+
+    //computed
+    filterTodos = () => {
+        return this.state.todos.filter(el => {
+            if(this.state.filter === "completed"){
+                return el.isCompleted === true
+            }else {
+                return el.isCompleted === false
+            }
+        })
     }
 
     //methods
@@ -33,20 +47,25 @@ class Todos extends Component{
 
     handleAddTodoSubmit = (e) => {
         e.preventDefault();
-        this.setState(state => {
-            const todos = [...state.todos, {
-                    id: state.id_count,
-                    title: state.new_todo,
-                    isCompleted: false,
-                    isEdit: false
+        if(this.state.new_todo === ""){
+            alert("Пустое значение")
+        }else{
+            this.setState(state => {
+                const todos = [{
+                        id: state.id_count,
+                        title: state.new_todo,
+                        isCompleted: false,
+                        isEdit: false
+                    },
+                    ...state.todos 
+                ];
+                state.id_count += 1
+                return{
+                    todos,
+                    new_todo: ''
                 }
-            ];
-            state.id_count += 1
-            return{
-                todos,
-                new_todo: ''
-            }
-        });
+            });
+        }
     }
 
     handleEditTodo = (id) => {
@@ -82,6 +101,10 @@ class Todos extends Component{
         }
     }
 
+    handleFilterChange = (value) => {
+        this.setState({filter: value});
+    }
+
     //template
     render(){
         return(
@@ -101,9 +124,12 @@ class Todos extends Component{
                             </form>
                         </div>
                     </div>
+                    <FilterTodo 
+                        filter={this.state.filter}
+                        onChange={this.handleFilterChange}/>
                     <div className="todos__list">
                         {
-                            this.state.todos.map((todo, i) => (
+                            this.filterTodos().map((todo, i) => (
                                 <TodoItem 
                                     todo={todo} 
                                     key={todo.id} 

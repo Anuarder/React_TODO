@@ -2,7 +2,7 @@ import "./todo_item.scss"
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-class TodoItem extends Component{
+class TodoItem extends Component {
     todoCompletedStyle = () =>{ // computed
         if(this.props.todo.isCompleted){
             return {
@@ -32,7 +32,7 @@ class TodoItem extends Component{
                         <div className="todo__label">
                             <input
                                 type="checkbox" 
-                                value={isCompleted} 
+                                defaultChecked={isCompleted}
                                 onChange={todoComplete.bind(this, id)}/>
                             <span>
                                 {title}
