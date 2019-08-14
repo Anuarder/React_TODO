@@ -3,11 +3,10 @@ import React, { Component } from 'react'
 import TodoItem from "../TodoItem/TodoItem"
 import FilterTodo from "../FilterTodo/FilterTodo"
 import Pagination from "../Pagination/Pagination"
+import TodoHeader from "../TodoHeader/TodoHeader"
 
 class Todos extends Component{
-    // data
     state = {
-        new_todo: "",
         id_count: 1,
         todos: [
             {
@@ -20,11 +19,10 @@ class Todos extends Component{
         filter: "uncompleted",
         filterTodo: [],
         todosPerPage: 7,
-        currentPage: 1
+        currentPage: 1,
+        currentEditTodo: ""
     }
 
-
-    //methods
     handleTodoComplete = (id) => {
         this.setState({ 
             todos: this.state.todos.map(todo => {
@@ -45,15 +43,14 @@ class Todos extends Component{
         });
     }
 
-    handleAddTodoSubmit = (e) => {
-        e.preventDefault();
-        if(this.state.new_todo === ""){
+    handleAddTodoSubmit = (value) => {
+        if(value === ""){
             alert("Пустое значение")
         }else{
             this.setState(state => {
                 const todos = [{
                         id: state.id_count,
-                        title: state.new_todo,
+                        title: value,
                         isCompleted: false,
                         isEdit: false
                     },
@@ -61,56 +58,76 @@ class Todos extends Component{
                 ];
                 state.id_count += 1
                 return{
-                    todos,
-                    new_todo: ''
+                    todos
                 }
             });
         }
     }
 
     handleEditTodo = (id) => {
+        // REFACTORING
         this.setState({
             todos: this.state.todos.map(todo => {
                 if(todo.id === id){
                     todo.isEdit = !todo.isEdit;
                 }
                 return todo;
+            }),
+            currentEditTodo: this.state.todos.map(todo => {
+                let todoTitle = ""
+                if(todo.id === id){
+                    todoTitle = todo.title
+                }
+                return todoTitle;
             })
         });
     }
-
-    handleNewTodoChange = (e) => {
-        this.setState({ new_todo: e.target.value });
+    
+    handleEditTitle = (value) => {
+        this.setState({currentEditTodo: value});
     }
     
-    handleEditTitle = (id, e) => {
+    editTodo = (id) => {
         this.setState({
             todos: this.state.todos.map(todo => {
-                // Передаваемое значение идет первым, e последним
-                // Реакт обновляет значение input
                 if(todo.id === id){
-                    todo.title = e.target.value;
+                    todo.title = this.state.currentEditTodo;
+                    todo.isEdit = false;
                 }
                 return todo;
-            })
-        });
+            }),
+        })
     }
     
-    handleEndEdit = (id, e) => {
-        if(e.key === "Enter"){
-            this.handleEditTodo(id);
+    cancelTodoEdit = (id) => {
+        this.setState({
+            todos: this.state.todos.map(todo => {
+                if(todo.id === id){
+                    todo.isEdit = false;
+                }
+                return todo;
+            }),
+        })
+    }
+
+    handleEndEdit = (id, key) => {
+        if(key === "Enter"){
+            this.editTodo(id);
+        } else if(key === "Escape"){
+            this.cancelTodoEdit(id);
         }
     }
 
     handleFilterChange = (value) => {
         this.setState({filter: value});
     }
+
     handlePaginate = (value) => {
         this.setState({currentPage: value})
     }
-    //template
+
     render(){
-        const { todos, currentPage, todosPerPage, filter } = this.state;
+        const { todos, currentPage, todosPerPage, filter, currentEditTodo } = this.state;
         const indexOfLastTodo = currentPage * todosPerPage;
         const indexOfFirsTodo = indexOfLastTodo  - todosPerPage;
         const filterTodo = todos.filter(el => {
@@ -120,33 +137,23 @@ class Todos extends Component{
                     return el.isCompleted === false
                 }
             });
-            const currentTodos = filterTodo.slice(indexOfFirsTodo, indexOfLastTodo);
+        const currentTodos = filterTodo.slice(indexOfFirsTodo, indexOfLastTodo);
+        
         return(
             <div className="todos-component">
                 <div className="todos">
-                    <div className="todos__header">
-                        <div className="todos__title">
-                            Todos
-                        </div>
-                        <div className="todos__input">
-                            <form onSubmit={this.handleAddTodoSubmit}>
-                                <input 
-                                    type="text" 
-                                    placeholder="Введите данные"
-                                    value={this.state.new_todo}
-                                    onChange={this.handleNewTodoChange}/>
-                            </form>
-                        </div>
-                    </div>
+                    <TodoHeader
+                        onSubmit={this.handleAddTodoSubmit}/>
                     <FilterTodo 
                         filter={filter}
-                        onChange={this.handleFilterChange}/>
+                        onClick={this.handleFilterChange}/>
                     <div className="todos__list">
                         {
                             currentTodos.map((todo, i) => (
                                 <TodoItem 
                                     todo={todo} 
                                     key={todo.id} 
+                                    currentEditTodo={currentEditTodo}
                                     todoComplete={this.handleTodoComplete}
                                     deleteTodo={this.handleTodoDelete}
                                     editTodo={this.handleEditTodo}

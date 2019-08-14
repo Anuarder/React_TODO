@@ -1,7 +1,7 @@
 import React from 'react'
 import "./filter_todo.scss"
 
-const FilterTodo = ({onChange, filter}) => {
+const FilterTodo = ({onClick, filter}) => {
     const isCompleted = () => {
         return filter === "completed"
     }
@@ -9,12 +9,12 @@ const FilterTodo = ({onChange, filter}) => {
         <div className="todos__filter">
             <button 
                 className={isCompleted() ? "todos__filter-button__green" : ""}
-                onClick={onChange.bind(this, 'completed')}>
+                onClick={() => onClick('completed')}>
                 Завершенные
             </button>
             <button 
                 className={!isCompleted() ? "todos__filter-button__red" : ""}
-                onClick={onChange.bind(this, 'uncompleted')}>
+                onClick={() => onClick('uncompleted')}>
                 Незавершенные
             </button>
         </div>

@@ -2,7 +2,7 @@ import "./todo_item.scss"
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const TodoItem = ({ todo, editTodo, todoComplete, editTitle, endEdit, deleteTodo }) => {
+const TodoItem = ({ todo, editTodo, todoComplete, editTitle, endEdit, deleteTodo, currentEditTodo }) => {
     const { id, title, isEdit, isCompleted } = todo;
 
     const todoCompletedStyle = () => {
@@ -31,17 +31,17 @@ const TodoItem = ({ todo, editTodo, todoComplete, editTitle, endEdit, deleteTodo
                         <input
                             type="checkbox" 
                             defaultChecked={isCompleted}
-                            onChange={todoComplete.bind(this, id)}/>
+                            onChange={() => todoComplete(id)}/>
                         <span>
                             {title}
                         </span>
                     </div>
                     :  
-                    <input 
+                    <input  
                         type="text" 
-                        value={title} 
-                        onChange={editTitle.bind(this, id)}
-                        onKeyUp={endEdit.bind(this, id)}/>
+                        value={currentEditTodo}
+                        onChange={(e) => editTitle(e.target.value)}
+                        onKeyUp={(e) => endEdit(id, e.key)}/>
                 }
                 <button onClick = {() => deleteTodo(id)}>
                     <i className="fas fa-trash"></i>

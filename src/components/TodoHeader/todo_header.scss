@@ -1,0 +1,16 @@
+.todos-header{
+    &__title{
+        background-color: #000;
+        color: #fff;
+        text-align: center;
+        font-size: 2rem;
+        padding: 1rem;
+    }
+    &__input{
+        input{
+            padding: 1rem;  
+            font-size: 1.3rem;
+            width: 100%;
+        }
+    }
+}
